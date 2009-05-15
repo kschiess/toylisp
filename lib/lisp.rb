@@ -90,7 +90,6 @@ class Lisp
       form = expression
       expression = nil
     end
-    p [form, expression]
     
     case form
       when :let
@@ -128,7 +127,6 @@ class Lisp
         raise "Unknown variable or function #{form.inspect}" unless value
         if value.instance_of?(Function) 
           v = funcall(value, expression)
-          p [:ret!, v]
           return v
         else
           return value
