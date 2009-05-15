@@ -23,18 +23,8 @@ describe "Basic language features (REHOIST?)" do
     lisp.run([]).should be_nil
   end
   it "should run a program consisting of a simple value and return that" do
-    lisp.run([:value]).should == :value
+    lisp.run(['lue']).should == 'lue'
   end 
-  describe "calling functions (foo 1 2)" do
-    before(:each) do
-      lisp.dictionary.add_function(:foo, [])
-    end
-    it "should look up foo in the current environment" do
-      flexmock(lisp).should_receive(:look_up).with(:foo).once
-      lisp.run([:foo, 1, 2])
-    end
-    it "should call foo with (1, 2)"
-  end
   describe "defining functions" do
   end
 end

@@ -27,4 +27,20 @@ describe '(defun should-be-constant () \'(one two three))' do
         [:foo]).should == 42
     end 
   end
+  context 'after deffun :bar' do
+    before(:each) do
+      lisp.run(
+        [:deffun, :bar, [:a], [:a]])
+    end
+    
+    it "should have :bar defined in the namespace" do
+      lisp.namespace.get(:bar).should_not be_nil
+    end 
+    it "should allow calling :bar" do
+      lisp.run(
+        [:bar, 13]).should == 13
+      lisp.run(
+        [:bar, 42]).should == 42
+    end 
+  end
 end

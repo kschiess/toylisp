@@ -6,9 +6,6 @@ describe '(let (a 1) ())' do
     @lisp = Lisp.new
   end
   
-  it "should have an empty namespace initially" do
-    lisp.namespace.should be_empty
-  end
   it "should run [:let [:a :value] []]" do
     lisp.run(
       [:let, [:a, :value], []])

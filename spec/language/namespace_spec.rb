@@ -6,6 +6,16 @@ describe Lisp::Namespace do
     @namespace = Lisp::Namespace.new
   end
   
+  it "should allow capturing the namespace" do
+    namespace.push(:a => 1)
+    n1 = namespace.capture
+    
+    namespace.pop; namespace.push(:a => 2)
+    n2 = namespace.capture
+    
+    n1.get(:a).should == 1
+    n2.get(:a).should == 2
+  end 
   it "should allow setting values to toplevel namespace" do
     namespace.set(:a, :foobar)
     namespace.get(:a).should == :foobar

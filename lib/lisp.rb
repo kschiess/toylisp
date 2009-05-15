@@ -1,57 +1,83 @@
 class Lisp
+  class Binding
+    attr_accessor :root
+    attr_reader :variables
+    
+    def initialize(variables={}, root=nil)
+      @root = root
+      @variables = variables
+    end
+    def get(name)
+      variables[name] ||
+        root && root.get(name) ||
+        nil
+    end
+    def set(name, value)
+      variables[name] = value
+    end
+  end
   class Namespace
-    attr_reader :bindings
-    def initialize
-      @bindings = [{}]
+    attr_reader :current
+    def initialize(binding = Binding.new)
+      @current = binding
     end
     
-    def empty?
-      bindings.empty?
-    end
-    
-    def push(binding)
-      bindings.push(binding)
+    def push(variables)
+      @current = Binding.new(variables, @current)
     end
     def pop
-      bindings.pop
+      @current = @current.root
+    end
+    
+    def capture 
+      Namespace.new(current)
+    end
+    
+    def inspect
+      h = {}
+      c = current
+      while c
+        h.merge!(c.variables)
+        c = c.root
+      end
+      h.inspect
     end
     
     def set(name, value) 
-      raise 'Assertion error, toplevel binding is missing!' if bindings.empty?
-      bindings.last[name] = value
+      raise 'Assertion error, toplevel binding is missing!' unless current
+      current.set(name, value)
     end
     def get(name)
-      bindings.reverse.each do |binding|
-        if value=binding[name]
-          return value
-        end
-      end
-      nil
+      current.get(name)
     end
   end
   class Function
-    attr_reader :interpreter
-    def initialize(interpreter, arguments, code)
-      @interpreter = interpreter
+    attr_reader :namespace
+    def initialize(namespace, arguments, code)
+      @namespace = namespace
       @arguments, @code = arguments, code
     end
     
     def call(arglist)
       binding = Hash[*@arguments.zip(arglist).flatten]
-      interpreter.namespace.push(binding)
-      interpreter.run(@code)
+      namespace.push(binding)
+      Lisp.new(namespace).run(@code)
     ensure
-      interpreter.namespace.pop
+      namespace.pop
+    end
+    
+    def inspect
+      [@arguments, @code].inspect
     end
   end  
     
   attr_reader :namespace
-  def initialize
-    @namespace = Namespace.new
+  def initialize(namespace = Namespace.new)
+    @namespace = namespace
   end
   
   def run(expression)
-    expression = [*expression]
+    expression = [*expression].dup
     
     # p expression
     form = expression.shift
@@ -63,7 +89,7 @@ class Lisp
         return run(code)
       when :deffun
         funname, arglist, code = expression
-        function = Function.new(self, arglist, code)
+        function = Function.new(namespace.capture, arglist, code)
         namespace.set(funname, function)
         return function
       when Symbol
@@ -80,7 +106,6 @@ class Lisp
   
   def funcall(function, arguments)
     arglist = arguments.map { |arg| run(arg) }
-
     function.call(arglist)
   end
 end
