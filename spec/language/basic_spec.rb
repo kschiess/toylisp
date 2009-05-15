@@ -25,6 +25,10 @@ describe "Basic language features (REHOIST?)" do
   it "should run a program consisting of a simple value and return that" do
     lisp.run(['lue']).should == 'lue'
   end 
-  describe "defining functions" do
-  end
+  it "should allow getting the :head of a list" do
+    lisp.run([:head, [1, 2, 3]]).should == 1
+  end 
+  it "should allow getting the :tail of a list" do
+    lisp.run([:tail, [1, 2, 3]]).should == [2, 3]
+  end 
 end

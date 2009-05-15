@@ -100,6 +100,12 @@ class Lisp
         else
           return run(false_branch)
         end
+      when :head
+        list = expression.first
+        return list.first
+      when :tail
+        list = expression.first
+        return list[1..-1]
       when Symbol
         value = namespace.get(form)
         if value.instance_of?(Function) 
