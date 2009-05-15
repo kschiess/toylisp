@@ -78,7 +78,7 @@ class Lisp
   
   def run(expression)
     expression = [*expression].dup
-    
+        
     # p expression
     form = expression.shift
     
@@ -92,6 +92,14 @@ class Lisp
         function = Function.new(namespace.capture, arglist, code)
         namespace.set(funname, function)
         return function
+      when :if
+        cond, true_branch, false_branch = expression
+        
+        if run(cond)
+          return run(true_branch)
+        else
+          return run(false_branch)
+        end
       when Symbol
         value = namespace.get(form)
         if value.instance_of?(Function) 
