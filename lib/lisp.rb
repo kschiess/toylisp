@@ -121,11 +121,15 @@ class Lisp
         return [run(list).empty?]
       when :cons
         return run(expression)
+      when :flatten
+        return run(expression).flatten
       when Symbol
         value = namespace.get(form)
         raise "Unknown variable or function #{form.inspect}" unless value
         if value.instance_of?(Function) 
-          return funcall(value, expression)
+          v = funcall(value, expression)
+          p [:ret!, v]
+          return v
         else
           return value
         end
