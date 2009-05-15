@@ -31,4 +31,11 @@ describe "Basic language features (REHOIST?)" do
   it "should allow getting the :tail of a list" do
     lisp.run([:tail, [1, 2, 3]]).should == [2, 3]
   end 
+  it "should know about :cons" do
+    lisp.run([:cons, 1, 2, 3]).should == [1, 2, 3]
+  end 
+  it "should know about :nil?" do
+    lisp.run([:nil?, []]).should == true
+    lisp.run([:nil?, [1, 2]]).should == false
+  end 
 end

@@ -106,13 +106,22 @@ class Lisp
       when :tail
         list = expression.first
         return list[1..-1]
+      when :nil?
+        list = expression.first
+        return run(list).nil?
+      when :cons
+        return expression
       when Symbol
         value = namespace.get(form)
+        raise "Unknown variable or function #{form.inspect}" unless value
         if value.instance_of?(Function) 
           return funcall(value, expression)
         else
           return value
         end
+      when Array
+        run(form)
+        return run(expression)
     else
       return form
     end
