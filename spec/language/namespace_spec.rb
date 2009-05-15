@@ -6,12 +6,19 @@ describe Lisp::Namespace do
     @namespace = Lisp::Namespace.new
   end
   
+  it "should allow setting values to toplevel namespace" do
+    namespace.set(:a, :foobar)
+    namespace.get(:a).should == :foobar
+  end 
   it "should allow pushing variables" do
     lambda {
       namespace.push(
         :a => 1
       )
     }.should_not raise_error
+  end 
+  it "should return nil if a variable does not exist" do
+    namespace.get(:foobar).should be_nil
   end 
   context ':a => 1' do
     before(:each) do
