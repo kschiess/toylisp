@@ -1,10 +1,12 @@
-
-
 class Lisp
   class Namespace
     attr_reader :bindings
     def initialize
       @bindings = []
+    end
+    
+    def empty?
+      bindings.empty?
     end
     
     def push(binding)
@@ -23,27 +25,24 @@ class Lisp
     end
   end
     
+  attr_reader :namespace
   def initialize
-    @dictionary = Dictionary.new
+    @namespace = Namespace.new
   end
   
-  def look_up(symbol)
+  def run(expression)
+    expression = [*expression]
     
-  end
-  
-  def run(program)
-    form = program.first
+    # p expression
+    form = expression.shift
     
-    if form.kind_of?(Symbol)
-      value = look_up(form)
-      
-      # try to execute value as a function
-      arguments = program[1..-1].map { |argument| 
-        run(argument) }
-        
-      
-    else 
-      form
+    case form
+      when :let
+        varlist, code = expression
+        namespace.push Hash[*varlist]
+        return run(code)
+      when Symbol
+        return namespace.get(form)
     end
   end
 end
