@@ -20,10 +20,11 @@ describe "Basic language features (REHOIST?)" do
   end
   
   it "should process a nop program and yield nil" do
-    lisp.run([]).should be_nil
+    lisp.run([]).should == []
   end
   it "should run a program consisting of a simple value and return that" do
-    lisp.run(['lue']).should == 'lue'
+    lisp.run(['lue']).should == ['lue']
+    lisp.run([1, 2, 3]).should == [1, 2, 3]
   end 
   it "should allow getting the :head of a list" do
     lisp.run([:head, [1, 2, 3]]).should == 1

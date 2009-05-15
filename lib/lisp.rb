@@ -79,6 +79,8 @@ class Lisp
   def run(expression)
     expression = [*expression].dup
         
+    return expression if expression.empty?
+    
     # p expression
     form = expression.shift
     
@@ -95,7 +97,7 @@ class Lisp
       when :if
         cond, true_branch, false_branch = expression
         
-        if run(cond)
+        if run(cond).first
           return run(true_branch)
         else
           return run(false_branch)
@@ -104,26 +106,27 @@ class Lisp
         list = expression.first
         return list.first
       when :tail
-        list = expression.first
+        list = run(expression.first)
         return list[1..-1]
       when :nil?
-        list = expression.first
-        return run(list).nil?
+        list = run(expression.first)
+        return run(list).empty?
       when :cons
-        return expression
+        return run(expression)
       when Symbol
         value = namespace.get(form)
         raise "Unknown variable or function #{form.inspect}" unless value
         if value.instance_of?(Function) 
           return funcall(value, expression)
         else
-          return value
+          return [value]
         end
-      when Array
-        run(form)
-        return run(expression)
-    else
-      return form
+    else 
+      if expression.empty?
+        return [form]
+      else
+        return [form, *run(expression)]
+      end
     end
   end
   

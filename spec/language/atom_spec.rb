@@ -8,6 +8,6 @@ describe 'atoms' do
   
   it "should evaluate [123] to 123" do
     lisp.run(
-      [123]).should == 123
+      [123]).should == [123]
   end 
 end

@@ -7,9 +7,9 @@ describe ':if' do
   end
   
   it "should correctly branch into true branch" do
-    lisp.run([:if, [true], [1], [2]]).should == 1
+    lisp.run([:if, [true], [1], [2]]).should == [1]
   end 
   it "should correctly branch into true branch" do
-    lisp.run([:if, [false], [1], [2]]).should == 2
+    lisp.run([:if, [false], [1], [2]]).should == [2]
   end 
 end

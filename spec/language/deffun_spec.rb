@@ -24,7 +24,7 @@ describe '(defun should-be-constant () \'(one two three))' do
     end 
     it "should allow calling :foo" do
       lisp.run(
-        [:foo]).should == 42
+        :foo).should == [42]
     end 
   end
   context 'after deffun :bar' do
@@ -38,9 +38,9 @@ describe '(defun should-be-constant () \'(one two three))' do
     end 
     it "should allow calling :bar" do
       lisp.run(
-        [:bar, 13]).should == 13
+        [:bar, 13]).should == [13]
       lisp.run(
-        [:bar, 42]).should == 42
+        [:bar, 42]).should == [42]
     end 
   end
 end
