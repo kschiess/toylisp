@@ -30,8 +30,18 @@ class Lisp
     end
   end
   class Function
-    def initialize(arglist, code)
-      @arglist, @code = arglist, code
+    attr_reader :interpreter
+    def initialize(interpreter, arguments, code)
+      @interpreter = interpreter
+      @arguments, @code = arguments, code
+    end
+    
+    def call(arglist)
+      binding = Hash[*@arguments.zip(arglist).flatten]
+      interpreter.namespace.push(binding)
+      interpreter.run(@code)
+    ensure
+      interpreter.namespace.pop
     end
   end  
     
@@ -53,13 +63,24 @@ class Lisp
         return run(code)
       when :deffun
         funname, arglist, code = expression
-        function = Function.new(arglist, code)
+        function = Function.new(self, arglist, code)
         namespace.set(funname, function)
         return function
       when Symbol
-        return namespace.get(form)
+        value = namespace.get(form)
+        if value.instance_of?(Function) 
+          return funcall(value, expression)
+        else
+          return value
+        end
     else
       return form
     end
+  end
+  
+  def funcall(function, arguments)
+    arglist = arguments.map { |arg| run(arg) }
+
+    function.call(arglist)
   end
 end
