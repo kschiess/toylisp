@@ -16,7 +16,7 @@ describe '(let (a 1) ())' do
         :a => 42)
     end
     it "should evaluate [:a] to 42" do
-      lisp.run([:a]).should == [42]
+      lisp.run([:a]).should == 42
     end
   end
   describe "effect of [:let [:a :value] []]" do
@@ -24,7 +24,7 @@ describe '(let (a 1) ())' do
       lisp.run(
         [:let, [:a, :value], [:a]])
 
-      lisp.run([:a]).should == [:value]
+      lisp.run([:a]).should == :value
     end
   end
 end

@@ -59,7 +59,11 @@ class Lisp
     end
     
     def call(arglist)
-      binding = Hash[*@arguments.zip(arglist).flatten]
+      binding = @arguments.zip(arglist).inject({}) {
+        |b, (name, value)|
+        b[name] = value
+        b
+      }
       namespace.push(binding)
       Lisp.new(namespace).run(@code)
     ensure
@@ -77,12 +81,16 @@ class Lisp
   end
   
   def run(expression)
-    expression = [*expression].dup
-        
-    return expression if expression.empty?
-    
-    # p expression
-    form = expression.shift
+    if expression.instance_of?(Array)
+      return expression if expression.empty?
+      
+      form = expression.first
+      expression = expression[1..-1]
+    else
+      form = expression
+      expression = nil
+    end
+    p [form, expression]
     
     case form
       when :let
@@ -103,14 +111,14 @@ class Lisp
           return run(false_branch)
         end
       when :head
-        list = expression.first
+        list = run(expression.first)
         return list.first
       when :tail
         list = run(expression.first)
         return list[1..-1]
       when :nil?
         list = run(expression.first)
-        return run(list).empty?
+        return [run(list).empty?]
       when :cons
         return run(expression)
       when Symbol
@@ -119,19 +127,21 @@ class Lisp
         if value.instance_of?(Function) 
           return funcall(value, expression)
         else
-          return [value]
+          return value
         end
     else 
-      if expression.empty?
-        return [form]
+      head = form.instance_of?(Array) ? run(form) : form
+      if expression.nil?
+        return head
       else
-        return [form, *run(expression)]
+        return [head, *run(expression)]
       end
     end
   end
   
   def funcall(function, arguments)
-    arglist = arguments.map { |arg| run(arg) }
+    arglist = (arguments.nil? && []) || 
+      arguments.map { |arg| run(arg) }
     function.call(arglist)
   end
 end

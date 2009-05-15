@@ -12,7 +12,7 @@ describe '#reverse' do
         [:deffun, :reverse, [:list], [
           [:if, [:nil?, :list],
             [],
-            [:cons, [:reverse, [:tail, :list]]]]]],
+            [:cons, [:reverse, [:tail, :list]], [:head, :list]]]]],
             
         [:reverse, [1, 2, 3]]]).should == [3, 2, 1]
   end
