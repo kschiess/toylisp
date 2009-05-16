@@ -104,7 +104,7 @@ class Lisp
       when :if
         cond, true_branch, false_branch = expression
         
-        if run(cond).first
+        if run(cond)
           return run(true_branch)
         else
           return run(false_branch)
@@ -117,9 +117,9 @@ class Lisp
         return list[1..-1]
       when :nil?
         list = run(expression.first)
-        return [run(list).empty?]
+        return run(list).empty?
       when :cons
-        return run(expression)
+        return run(expression).map { |el| [*el] }.inject ([]) { |union, el| union += el }
       when :flatten
         return run(expression).flatten
       when Symbol

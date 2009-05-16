@@ -8,10 +8,10 @@ describe '#reverse' do
   
   it 'should correctly reverse a list' do
     lisp.run(
-      [:deffun, :reverse, [:list], [:flatten, 
+      [:deffun, :reverse, [:list], 
         [:if, [:nil?, :list],
           [],
-          [:cons, [:reverse, [:tail, :list]], [:head, :list]]]]])
+          [:cons, [:reverse, [:tail, :list]], [:head, :list]]]])
     lisp.run(
         [:reverse, [1, 2, 3]]).should == [3, 2, 1]
   end

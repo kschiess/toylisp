@@ -42,13 +42,13 @@ describe "Basic language features (REHOIST?)" do
     lisp.run([:cons, 1, 2, 3]).should == [1, 2, 3]
   end 
   it "should cons correctly with the empty list" do
-    lisp.run([:cons, 1, []]).should == [1, []]
+    lisp.run([:cons, 1, []]).should == [1]
   end
   it "should :flatten out lists" do
     lisp.run([:flatten, [[1, [2]]]]).should == [1, 2]
   end 
   it "should know about :nil?" do
-    lisp.run([:nil?, []]).should == [true]
-    lisp.run([:nil?, [1, 2]]).should == [false]
+    lisp.run([:nil?, []]).should == true
+    lisp.run([:nil?, [1, 2]]).should == false
   end 
 end
