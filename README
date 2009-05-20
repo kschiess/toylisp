@@ -1,3 +1,5 @@
+== WHAT IS THIS
+
 This is a really small toy lisp interpreter I hacked to be able to run this
 snippet: 
 
@@ -7,3 +9,8 @@ snippet:
       [:cons, [:reverse, [:tail, :list]], [:head, :list]]]]
   
   [:reverse, [1, 2, 3]]
+  
+== AUTHOR
+
+Copyright (c) 2009, Kaspar Schiess
+
